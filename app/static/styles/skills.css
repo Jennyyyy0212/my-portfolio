@@ -1,0 +1,32 @@
+.marquee-wrapper {
+  overflow: hidden;
+  width: 100%;
+  border: 1px dashed #d6d3d1; /* Tailwind's stone-300 */
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+}
+
+@media (prefers-color-scheme: dark) {
+  .marquee-wrapper {
+    border-color: #44403c; /* Tailwind's stone-700 */
+  }
+}
+
+.marquee-track {
+  display: flex;
+  gap: 1.5rem;
+  animation: marquee 100s linear infinite;
+}
+
+.marquee-track:hover {
+  animation-play-state: paused;
+}
+
+@keyframes marquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}

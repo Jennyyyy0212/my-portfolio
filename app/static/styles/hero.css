@@ -1,85 +1,148 @@
 /* Section spacing */
+.section-hero {
+  padding-top: 5rem;
+  /* Tailwind: py-20 */
+  padding-bottom: 5rem;
+  display: flex;
+  flex-direction: column;
+}
+
+@media (min-width: 768px) {
   .section-hero {
-    padding-top: 5rem;    /* Tailwind: py-20 */
-    padding-bottom: 5rem;
+    padding-top: 8rem;
+    /* md:py-32 */
+    padding-bottom: 8rem;
   }
-  @media (min-width: 768px) {
-    .section-hero {
-      padding-top: 8rem;  /* md:py-32 */
-      padding-bottom: 8rem;
-    }
-  }
+}
 
-  /* Container */
-  .hero-container {
-    max-width: 1280px;        /* Tailwind: container */
-    margin-left: auto;
-    margin-right: auto;
-    padding-left: 1.5rem;     /* px-6 */
-    padding-right: 1.5rem;
-    text-align: center;
-  }
+/* Container */
+.hero-container {
+  max-width: 1280px;
+  /* Tailwind: container */
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1.5rem;
+  /* px-6 */
+  padding-right: 1.5rem;
+  text-align: center;
+  margin-bottom: 2rem;
+}
 
-  /* Heading */
+/* Heading */
+.hero-heading {
+  font-size: 3rem;
+  /* text-5xl */
+  font-weight: 700;
+  /* font-bold */
+  color: #5b21b6;
+  /* text-violet-800 */
+  margin-bottom: 1rem;
+  /* mb-4 */
+}
+
+@media (min-width: 768px) {
   .hero-heading {
-    font-size: 3rem;              /* text-5xl */
-    font-weight: 700;             /* font-bold */
-    color: #5b21b6;               /* text-violet-800 */
-    margin-bottom: 1rem;          /* mb-4 */
+    font-size: 4.5rem;
+    /* md:text-7xl */
   }
-  @media (min-width: 768px) {
-    .hero-heading {
-      font-size: 4.5rem;          /* md:text-7xl */
-    }
-  }
+}
 
-  /* Subheading */
+/* Subheading */
+.hero-subheading {
+  font-size: 1.125rem;
+  /* text-lg */
+  color: #4b5563;
+  /* text-gray-600 */
+  max-width: 48rem;
+  /* max-w-3xl */
+  margin: 16px auto;
+}
+
+@media (min-width: 768px) {
   .hero-subheading {
-    font-size: 1.125rem;          /* text-lg */
-    color: #4b5563;               /* text-gray-600 */
-    max-width: 48rem;             /* max-w-3xl */
-    margin: 16px auto;
+    font-size: 1.25rem;
+    /* md:text-xl */
   }
-  @media (min-width: 768px) {
-    .hero-subheading {
-      font-size: 1.25rem;         /* md:text-xl */
-    }
+}
+
+/* CTA Container */
+.hero-cta {
+  margin-top: 3rem;
+  /* mt-12 */
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  /* space-x-4 */
+}
+
+/* Buttons */
+.btn-primary,
+.btn-secondary {
+  font-weight: 700;
+  padding: 0.75rem 2rem;
+  border-radius: 9999px;
+  /* rounded-full */
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  /* shadow-lg */
+  transition: transform 0.2s ease;
+  text-decoration: none;
+}
+
+.btn-primary {
+  background-color: #7c3aed;
+  /* bg-violet-600 */
+  color: white;
+}
+
+.btn-primary:hover {
+  background-color: #6d28d9;
+  /* hover:bg-violet-700 */
+  transform: scale(1.05);
+}
+
+.btn-secondary {
+  background-color: white;
+  color: #7c3aed;
+  /* text-violet-600 */
+  border: 1px solid #ddd6fe;
+  /* border-violet-200 */
+}
+
+.btn-secondary:hover {
+  background-color: #f3f4f6;
+  /* hover:bg-gray-100 */
+  transform: scale(1.05);
+}
+
+
+/** Skills*/
+.marquee-wrapper {
+  overflow: hidden;
+  width: 100%;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  /* stone-300 */
+  margin-top: 2rem;
+  position: relative;
+  border: none !important;
+}
+
+.marquee-track {
+  display: flex;
+  gap: 1.5rem;
+  animation: marquee 30s linear infinite;
+}
+
+.marquee-track:hover {
+  animation-play-state: paused;
+}
+
+@keyframes marquee {
+  0% {
+    transform: translateX(0);
   }
 
-  /* CTA Container */
-  .hero-cta {
-    margin-top: 3rem;             /* mt-12 */
-    display: flex;
-    justify-content: center;
-    gap: 1rem;                    /* space-x-4 */
+  100% {
+    transform: translateX(-50%);
   }
-
-  /* Buttons */
-  .btn-primary,
-  .btn-secondary {
-    font-weight: 700;
-    padding: 0.75rem 2rem;
-    border-radius: 9999px;        /* rounded-full */
-    box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); /* shadow-lg */
-    transition: transform 0.2s ease;
-    text-decoration: none; 
-  }
-
-  .btn-primary {
-    background-color: #7c3aed;   /* bg-violet-600 */
-    color: white;
-  }
-  .btn-primary:hover {
-    background-color: #6d28d9;   /* hover:bg-violet-700 */
-    transform: scale(1.05);
-  }
-
-  .btn-secondary {
-    background-color: white;
-    color: #7c3aed;               /* text-violet-600 */
-    border: 1px solid #ddd6fe;    /* border-violet-200 */
-  }
-  .btn-secondary:hover {
-    background-color: #f3f4f6;    /* hover:bg-gray-100 */
-    transform: scale(1.05);
-  }
+}
