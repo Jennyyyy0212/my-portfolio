@@ -25,8 +25,8 @@ class TimelinePost (Model) :
     created_at = DateTimeField(default=datetime.datetime.now)
     class Meta:
         database = mydb
-mydb. connect()
-mydb. create_tables([TimelinePost])
+mydb.connect()
+mydb.create_tables([TimelinePost])
 
 hero_info = {
     "name": "Jenny Cheng",
@@ -211,12 +211,12 @@ def hobbies_route():
     )
 
 
-@app. route('/api/timeline_post', methods=['POST' ])
+@app.route('/api/timeline_post', methods=['POST'])
 def post_time_line_post():
-    name = request. form[ 'name']
-    email = request. form['email']
-    content = request.form ['content']
-    timeline_post = TimelinePost. create(name=name, email=email, content=content)
+    name = request.form[ 'name']
+    email = request.form['email']
+    content = request.form['content']
+    timeline_post = TimelinePost.create(name=name, email=email, content=content)
     return model_to_dict(timeline_post)
 
 @app.route('/api/timeline_post', methods=['GET'])
