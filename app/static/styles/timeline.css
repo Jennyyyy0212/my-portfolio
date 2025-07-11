@@ -1,0 +1,123 @@
+/* TIMELINE SECTION STYLES */
+.timeline-section {
+    padding: 6rem 0;
+    background-color: var(--bg-section);
+}
+
+/* Add some margin to the subtitle for spacing */
+.timeline-section .section-subtitle {
+    margin-bottom: 3.5rem;
+}
+
+.timeline-content {
+    background-color: var(--bg-card);
+    padding: 2.5rem;
+    border-radius: 16px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.05);
+    border: 1px solid var(--border);
+}
+
+.timeline-divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 2.5rem 0;
+}
+
+/* REDESIGNED FORM USING CSS VARIABLES */
+.post-form .form-group {
+    margin-bottom: 1.5rem;
+}
+
+.post-form label {
+    display: block;
+    font-weight: 500;
+    color: var(--text);
+    margin-bottom: 0.5rem;
+}
+
+.post-form input[type="text"],
+.post-form input[type="email"],
+.post-form textarea {
+    width: 100%;
+    padding: 12px 15px;
+    background-color: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    font-size: 1rem;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    box-sizing: border-box;
+}
+
+.post-form input:focus,
+.post-form textarea:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--border);
+}
+
+.submit-btn {
+    width: 100%;
+    padding: 15px;
+    font-size: 1rem;
+    font-weight: 700;
+    color: #fff;
+    background-color: var(--accent);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.2s;
+}
+
+.submit-btn:hover {
+    background-color: var(--accent-soft);
+    transform: translateY(-2px);
+}
+
+/* POST STYLES */
+.post {
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background-color: var(--bg);
+    transition: box-shadow 0.2s;
+}
+
+.post:last-child {
+    margin-bottom: 0;
+}
+
+.post:hover {
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.07);
+}
+
+.post-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.gravatar {
+    border-radius: 50%;
+    margin-right: 15px;
+    border: 2px solid var(--border-strong);
+}
+
+.post-author strong {
+    color: var(--text);
+    font-weight: 600;
+    display: block;
+}
+
+.post-author span {
+    font-size: 0.85rem;
+    color: var(--text-light);
+}
+
+.post-content {
+    color: var(--text);
+    line-height: 1.6;
+    word-wrap: break-word; /* Prevents long text from overflowing */
+}
