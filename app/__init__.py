@@ -18,15 +18,15 @@ mydb = MySQLDatabase(
 
 print(mydb)
 
-class TimelinePost (Model) :
+class TimelinePost(Model):
     name = CharField()
     email = CharField()
     content = TextField()
     created_at = DateTimeField(default=datetime.datetime.now)
+
     class Meta:
         database = mydb
-mydb.connect()
-mydb.create_tables([TimelinePost])
+
 
 hero_info = {
     "name": "Jenny Cheng",
@@ -179,6 +179,8 @@ skills = [
     {"name": "Android", "filename": "/static/img/icon/Android.png"},
 ]
 
+mydb.connect()
+mydb.create_tables([TimelinePost])
 
 @app.route("/")
 def index():
@@ -213,7 +215,7 @@ def hobbies_route():
 
 @app.route('/api/timeline_post', methods=['POST'])
 def post_time_line_post():
-    name = request.form[ 'name']
+    name = request.form['name']
     email = request.form['email']
     content = request.form['content']
     timeline_post = TimelinePost.create(name=name, email=email, content=content)
