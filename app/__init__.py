@@ -25,7 +25,7 @@ class TimelinePost (Model) :
     created_at = DateTimeField(default=datetime.datetime.now)
     class Meta:
         database = mydb
-mydb. connect ()
+mydb. connect()
 mydb. create_tables([TimelinePost])
 
 hero_info = {
