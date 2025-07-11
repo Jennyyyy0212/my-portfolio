@@ -230,3 +230,11 @@ def get_time_line_post() :
         TimelinePost.select().order_by(TimelinePost.created_at.desc())
         ]
     }
+                                                                                        
+@app.route('/api/timeline_post/<int:post_id>', methods=['DELETE'])
+def get_single_post(post_id):
+    post = TimelinePost.get_or_none(TimelinePost.id == post_id)
+    if post:
+        post.delete_instance()
+        return {"message": f"Deleted timeline post {post_id}"}, 200
+    return {"error": "Post not found"}, 404
