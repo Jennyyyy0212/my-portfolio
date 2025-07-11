@@ -1,9 +1,21 @@
 import os
 from flask import Flask, render_template, request
 from dotenv import load_dotenv
+from peewee import *
 
 load_dotenv()
 app = Flask(__name__)
+
+mydb = 
+MySQLDatabase(
+    os.getenv("MYSQL_DATABASE"),
+    user=os.getenv("MYSQL_USER"),
+    password=os.getenv("MYSQL_PASSWORD"),
+    host=os.getenv("MYSQL_HOST"),
+    port=3306
+)
+
+print(mydb)
 
 hero_info = {
     "name": "Jenny Cheng",
@@ -16,7 +28,7 @@ about_info = {
     "location": "San Francisco, CA",
     "title": ["Software Engineer", "Software Developer"],
     "interests": ["AI", "Web Dev", "Hackathons", "Startups"],
-    "photo_url": "/static/img/logo.jpg",
+    "photo_url": "/static/img/photo.JPG",
 }
 
 experiences_data = [
@@ -135,6 +147,27 @@ projects = [
     }
 ]
 
+skills = [
+    {"name": "Linux", "filename": "/static/img/icon/Linux.png"},
+    {"name": "Docker", "filename": "/static/img/icon/Docker.png"},
+    {"name": "Python", "filename": "/static/img/icon/Python.png"},
+    {"name": "React", "filename": "/static/img/icon/React.png"},
+    {"name": "JavaScript", "filename": "/static/img/icon/Javascript.png"},
+    {"name": "Java", "filename": "/static/img/icon/Java.png"},
+    {"name": "Google ADK", "filename": "/static/img/icon/Google-adk.png"},
+    {"name": "MongoDB", "filename": "/static/img/icon/Mongodb.png"},
+    {"name": "Markdown", "filename": "/static/img/icon/Markdown.png"},
+    {"name": "Flutter", "filename": "/static/img/icon/Flutter.png"},
+    {"name": "FastAPI", "filename": "/static/img/icon/Fastapi.png"},
+    {"name": "Flask", "filename": "/static/img/icon/Flask.png"},
+    {"name": "GitHub", "filename": "/static/img/icon/Github.png"},
+    {"name": "Git", "filename": "/static/img/icon/Git.png"},
+    {"name": "Firebase", "filename": "/static/img/icon/Firebase.png"},
+    {"name": "Dart", "filename": "/static/img/icon/Dart.png"},
+    {"name": "Azure", "filename": "/static/img/icon/Azure.png"},
+    {"name": "Android", "filename": "/static/img/icon/Android.png"},
+]
+
 
 @app.route("/")
 def index():
@@ -153,6 +186,7 @@ def index():
             {"title": "Vancouver, BC", "coords": [-123.1207, 49.2827]},
         ],
         url=os.getenv("URL"),
+        skills=skills,
     )
 
 
