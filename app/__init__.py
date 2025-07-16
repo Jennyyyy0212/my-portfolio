@@ -8,12 +8,16 @@ import datetime
 load_dotenv()
 app = Flask(__name__)
 
-mydb = MySQLDatabase(
-    os.getenv("MYSQL_DATABASE"),
-    user=os.getenv("MYSQL_USER"),
-    password=os.getenv("MYSQL_PASSWORD"),
-    host=os.getenv("MYSQL_HOST"),
-    port=3306
+if os.getenv("TESTING") == "true":
+    print("Running in test mode")
+    mydb = SqliteDatabase(':memory:')
+else:
+    mydb = MySQLDatabase(
+        os.getenv("MYSQL_DATABASE"),
+        user=os.getenv("MYSQL_USER"),
+        password=os.getenv("MYSQL_PASSWORD"),
+        host=os.getenv("MYSQL_HOST"),
+        port=3306
 )
 
 print(mydb)
@@ -222,11 +226,16 @@ def timeline():
 
 @app.route('/api/timeline_post', methods=['POST'])
 def post_time_line_post():
-    name = request.form['name']
-    email = request.form['email']
-    content = request.form['content']
-    timeline_post = TimelinePost.create(name=name, email=email, content=content)
-    return model_to_dict(timeline_post)
+    error = validateTimelineForm(request.form)
+
+    if len(error) != 0:
+        return error, 400
+    else:
+        name = request.form['name']
+        email = request.form['email']
+        content = request.form['content']
+        timeline_post = TimelinePost.create(name=name, email=email, content=content)
+        return model_to_dict(timeline_post)
 
 @app.route('/api/timeline_post', methods=['GET'])
 def get_time_line_post() :
@@ -245,3 +254,16 @@ def get_single_post(post_id):
         post.delete_instance()
         return {"message": f"Deleted timeline post {post_id}"}, 200
     return {"error": "Post not found"}, 404
+
+
+def validateTimelineForm(form) -> str:
+    if 'name' not in form or len(form['name']) == 0:
+        return "Invalid name"
+    
+    if 'content' not in form or len(form['content']) == 0:
+        return "Invalid content"
+    
+    if 'email' not in form or '@' not in form['email'] == 0 or '.' not in form['email']:
+        return "Invalid email"
+    
+    return ""
