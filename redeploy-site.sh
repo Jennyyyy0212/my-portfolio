@@ -22,10 +22,15 @@ pip install -r requirements.txt || {
   exit 1
 }
 
-echo "Reloading systemd and restarting service..."
-systemctl daemon-reload
-systemctl restart myportfolio.service || {
-  echo "Erorr: Failed to restart myportfolio.service"
+echo "Shut down all containers..."
+docker compose -f docker-compose.prod.yml down  || {
+  echo "Error: Failed to shut down containers"
+  exit 1
+}
+
+echo "Re-building and starting all containers..."
+docker compose -f docker-compose.prod.yml up -d --build || {
+  echo "Error: Failed to build and start containers"
   exit 1
 }
 
