@@ -266,3 +266,8 @@ def validateTimelineForm(form) -> str:
         return "Invalid email"
     
     return ""
+
+
+@app.route("/rate_limit_error")
+def rate_limit_error():
+    return render_template("rate_limit_error.html"), 503
