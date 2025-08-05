@@ -57,6 +57,10 @@
     <script>
         async function loadPosts() {
             const res = await fetch("/api/timeline_post");
+            if (!res.ok) {
+                console.warn("Error fetching posts:", res.status);
+                return;
+            }
             const data = await res.json();
             const posts = data.timeline_posts;
             const container = document.getElementById("posts");
