@@ -31,6 +31,7 @@
 
             <div class="timeline-content">
                 <form id="post-form" class="post-form">
+                    <div id="rate-limit-warning" class="text-red-600 font-semibold mb-4 hidden"></div>
                     <div class="form-group">
                         <label for="name">Name</label>
                         <input type="text" name="name" id="name" placeholder="Your name" required />
@@ -84,14 +85,42 @@
         document.getElementById("post-form").addEventListener("submit", async e => {
             e.preventDefault();
             const formData = new FormData(e.target);
+            const warning = document.getElementById("rate-limit-warning");
+            const submitBtn = document.getElementById("submit-btn");
 
-            await fetch("/api/timeline_post", {
-                method: "POST",
-                body: formData,
-            });
+            try {
+                const res = await fetch("/api/timeline_post", {
+                    method: "POST",
+                    body: formData,
+                });
 
-            e.target.reset(); // Clear form
-            await loadPosts(); // Refresh posts
+                if (res.status === 503) {
+                    // Rate limit hit
+                    let countdown = 60;
+                    warning.classList.remove("hidden");
+                    warning.innerText = `⏱️ Too many posts! Please wait ${countdown} seconds.`;
+                    submitBtn.disabled = true;
+                    submitBtn.classList.add("opacity-50", "cursor-not-allowed");
+
+                    const interval = setInterval(() => {
+                        countdown--;
+                        warning.innerText = `⏱️ Too many posts! Please wait ${countdown} seconds.`;
+                        if (countdown <= 0) {
+                            clearInterval(interval);
+                            warning.classList.add("hidden");
+                            submitBtn.disabled = false;
+                            submitBtn.classList.remove("opacity-50", "cursor-not-allowed");
+                        }
+                    }, 1000);
+                    return;
+                }
+                e.target.reset(); // Clear form
+                await loadPosts(); // Refresh posts
+
+            } catch (err) {
+                warning.classList.remove("hidden");
+                warning.innerText = "⚠️ Failed to submit. Please try again later.";
+            }
         });
 
         // Initial load
