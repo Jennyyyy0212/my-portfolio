@@ -121,26 +121,18 @@ hobbies = [
 
 projects = [
     {
-        "title": "Glance",
-        "subtitle": "AI Social Cheat Sheet",
-        "description": "An AI-powered tool that summarizes any X user's tweets into a snapshot of their interests, tone, and focus.",
-        "image_url": "/img/projects/glance.webp",
-        "link": "https://github.com/ericcxie/glance",
-        "tags": ["Next.js", "OpenAI API", "X API", "Supabase", "Prisma"]
-    },
-    {
         "title": "Summailize",
         "subtitle": "Gmail Digest Generator",
         "description": "A Gmail extension that summarizes unread emails using AI and stores digest in Firestore, with support for both per-email and full summary views.",
-        "image_url": "/img/projects/summailize.webp",
-        "link": "https://github.com/jennyycheng/summailize",
+        "image_url": "/static/img/summailize-screen.png",
+        "link": "https://github.com/lydia-yan/Summailize",
         "tags": ["Python", "Flask", "OpenAI API", "Gmail API", "Firebase"]
     },
     {
         "title": "IntelliView",
         "subtitle": "Mock Interview Transcript Agent",
         "description": "Built with Google’s AI Agent Development Kit, this tool conducts real-time mock interviews, transcribes sessions, and summarizes answers using Gemini.",
-        "image_url": "/static/img/Intelliview.png",
+        "image_url": "/static/img/intelliview-screen.png",
         "link": "https://github.com/lydia-yan/Intelliview",
         "tags": ["Gemini", "Google ADK", "FastAPI", "WebSocket", "Streaming"]
     },
@@ -148,7 +140,7 @@ projects = [
         "title": "Smart Bookmark",
         "subtitle": "AI Bookmark Organizer",
         "description": "A Chrome extension that classifies and tags your saved URLs using Gemini’s summarization and prompt APIs, and suggests folders based on content.",
-        "image_url": "/img/projects/bookmark.webp",
+        "image_url": "/static/img/bookmark-screen.png",
         "link": "https://github.com/Jennyyyy0212/bookmark-organizer",
         "tags": ["Chrome Extension", "Gemini", "Prompt API", "JavaScript"]
     },
@@ -156,7 +148,7 @@ projects = [
         "title": "TeamCAST",
         "subtitle": "Team Contribution Tracking Tool",
         "description": "An AI-powered dashboard that auto-fetches GitHub PRs and visualizes team contributions for collaborative learning or grading use cases.",
-        "image_url": "/img/projects/teamcast.webp",
+        "image_url": "/static/img/Intelliview.png",
         "link": "https://github.com/jennyycheng/teamcast",
         "tags": ["React", "Firebase", "GitHub API", "Tailwind CSS", "PR Viewer"]
     }
