@@ -48,50 +48,80 @@ about_info = {
 
 experiences_data = [
     {
+        "job_title": "Production Engineer Intern",
+        "date": "2025 - Present",
+        "location": "Remote, CA",
+        "company_name": "Meta x MLH Fellowship",
+        "company_logo": "/static/img/facebook-logo.jpeg",
+        "company_link": "https://opensource.fb.com/partnerships/major-league-hacking/",
+        "tech_stack": ["Python", "Flask", "Docker", "Linux", "Bash", "React"],
+        "description": "Focused on improving system reliability and developer workflows through production engineering practices.",
+        "details": {
+            "bullets": [
+                "Designed and implemented logging, monitoring, and alerting for Flask-based backend services using open-source tooling.",
+                "Containerized full-stack applications with Docker and managed multi-service environments via Docker Compose.",
+                "Wrote shell scripts to automate testing, deployment, and log analysis on Linux-based environments.",
+                "Improved CI/CD pipelines and reduced production deployment time by over 30%.",
+                "Collaborated with fellows and mentors from Meta to debug performance issues and conduct incident response simulations.",
+            ]
+        },
+    },
+    {
         "job_title": "Data Operator",
-        "date": "2022 - Present",
-        "location": "San Francisco, CA",
-        "company_name": "Google",
-        "company_logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_%22G%22_logo.svg/800px-Google_%22G%22_logo.svg.png",
-        "tech_stack": ["Python", "Docker", "AWS", "Kubernetes", "React", "Node.js"],
-        "description": "Led a team to build scalable cloud-native applications. Improved CI/CD pipelines, mentored junior developers, and collaborated with cross-functional teams to deliver high-impact products.",
+        "date": "2024 - 2024",
+        "location": "Mountain View, CA",
+        "company_name": "Athelas / Commure",
+        "company_logo": "/static/img/commure-logo.jpeg",
+        "company_link": "https://www.athelas.com/",
+        "tech_stack": ["Python", "SQL", "Data Analytics"],
+        "description": "Supported backend workflows and helped improve the accuracy and efficiency of patient data processing systems.",
+        "details": {
+            "bullets": [
+                "Reviewed and validated large volumes of healthcare data across multiple hospital systems.",
+                "Automated the inconsistency checking process using Python and solved around 80% of repetive tasks, reducing manual review effort",
+                "Worked closely with engineers to debug data pipeline issues and propose improvements.",
+            ]
+        },
     },
     {
-        "job_title": "Quantitative Researcher",
-        "date": "2020 - 2022",
-        "location": "New York, NY",
-        "company_name": "Jane Street",
-        "company_logo": "https://ocaml.janestreet.com/ocaml-core/v0.12/doc/logo.png",
-        "tech_stack": ["Python", "OCaml", "Pandas"],
-        "description": "Developed and backtested trading strategies, analyzed large datasets, and collaborated with traders to optimize performance.",
-    },
-    {
-        "job_title": "Backend Developer",
-        "date": "2018 - 2020",
-        "location": "Bozeman, MT",
-        "company_name": "Snowflake",
-        "company_logo": "https://logos-world.net/wp-content/uploads/2022/11/Snowflake-Symbol.png",
-        "tech_stack": ["Go", "PostgreSQL", "Docker"],
-        "description": "Designed and implemented RESTful APIs, optimized database queries, and maintained microservices infrastructure.",
+        "job_title": "Marketing Engineer",
+        "date": "2023 - 2024",
+        "location": "San Jose, CA",
+        "company_name": "ABConvert",
+        "company_logo": "/static/img/abconvert-logo.jpeg",
+        "company_link": "https://www.abconvert.io/",
+        "tech_stack": ["Python", "LLM", "OpenAI", "Pandas"],
+        "description": "Built AI tools to optimize marketing campaigns through data analysis, automation, and content generation.",
+        "details": {
+            "bullets": [
+                "Developed Python pipelines to analyze and segment marketing performance data using Pandas.",
+                "Built prompt-based GPT tools that generated headlines, CTAs, and ad copy tailored to different user segments.",
+                "Fine-tuned content generation using A/B testing results to improve engagement metrics.",
+                "Collaborated with the marketing and engineering teams to launch LLM-based internal tools.",
+                "Reduced manual campaign iteration time by over 50% through automation and insight generation.",
+            ]
+        },
     },
 ]
 
 education_data = [
     {
-        "degree": "M.Sc. Computer Science",
-        "date": "2016 - 2018",
-        "location": "Stanford, CA",
-        "institution_name": "Stanford University",
-        "institution_logo": "https://identity.stanford.edu/wp-content/uploads/sites/3/2020/07/block-s-right.png",
-        "description": "Specialized in Artificial Intelligence and Machine Learning. Graduated with honors.",
+        "degree": "M.Sc. Software Engineering",
+        "date": "2014 - Present",
+        "location": "Irvine, CA",
+        "institution_name": "University of California, Irvine",
+        "institution_logo": "/static/img/uci-logo.jpeg",
+        "institution_link": "https://uci.edu/",
+        "description": "Graduate program focused on scalable systems, backend development, and engineering best practices. Collaborating on real-world projects with a strong emphasis on infrastructure and testing.",
     },
     {
-        "degree": "B.Sc. Computer Science",
-        "date": "2012 - 2016",
-        "location": "Cambridge, MA",
-        "institution_name": "MIT",
-        "institution_logo": "https://download.logo.wine/logo/Massachusetts_Institute_of_Technology/Massachusetts_Institute_of_Technology-Logo.wine.png",
-        "description": "Focused on software engineering principles and data structures. Active member of the coding club.",
+        "degree": "B.Sc. Business Analytics",
+        "date": "2019 - 2023",
+        "location": "San Jose, CA",
+        "institution_name": "San Jose State University",
+        "institution_logo": "/static/img/sjsu-logo.png",
+        "institution_link": "https://www.sjsu.edu/",
+        "description": "Studied data analytics, statistics, and business strategy with hands-on projects in machine learning and data visualization. Minor in CS. Graduated with honors.",
     },
 ]
 
