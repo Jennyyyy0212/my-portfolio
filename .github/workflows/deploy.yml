@@ -39,6 +39,7 @@ jobs:
           echo "Timestamp: $TIMESTAMP"
 
           curl -s -X POST "${{ secrets.DISCORD_WEBHOOK }}" \
+          -H "Content-Type: application/json" \
           -d "{
             \"content\": \"🚀 Deployment Successful\",
             \"embeds\": [{
@@ -58,6 +59,7 @@ jobs:
           FULL_ERROR="${ERROR_MESSAGE}\nError details:\n${ERROR_DETAILS}"
 
           curl -s -X POST "${{ secrets.DISCORD_WEBHOOK }}" \
+          -H "Content-Type: application/json" \
           -d '{
             "content": "🚨 Deployment Failed",
             "embeds": [{
