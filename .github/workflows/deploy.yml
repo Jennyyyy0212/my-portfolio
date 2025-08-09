@@ -40,14 +40,13 @@ jobs:
 
           curl -s -X POST "${{ secrets.DISCORD_WEBHOOK }}" \
           -H "Content-Type: application/json" \
-          -d "{
-            \"content\": \"🚀 Deployment Successful\",
-            \"embeds\": [{
-              \"title\": \"Deployment Status\",
-              \"description\": \"The deployment was successful.\",
-              \"timestamp\": \"$TIMESTAMP\"
+          -d '{
+            "content": "🚀 Deployment Successful",
+            "embeds": [{
+              "title": "Deployment Status",
+              "description": "The deployment was successful.",
             }]
-          }"
+          }'
       - name: Discord Notification for Failure Deployment
         if: ${{ failure() }}
         run: |
@@ -65,7 +64,6 @@ jobs:
             "embeds": [{
               "title": "Deployment Status",
               "description": "'"${FULL_ERROR}"'",
-              "timestamp": "'$TIMESTAMP'"
             }]
           }'
 
