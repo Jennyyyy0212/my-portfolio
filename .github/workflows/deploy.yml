@@ -28,6 +28,11 @@ jobs:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
           SSH_IP: ${{ secrets.SSH_IP }}
           SSH_USER: ${{ secrets.SSH_USER }}
+      - name: Simulate Deployment Failure
+        run: |
+          echo "Deploying to the server..."
+          # Simulate a failure (e.g., non-zero exit code)
+          exit 1  # Force failure
       - name: Deploy site
         run: ssh my-vps "cd ${{ secrets.PROJECT_ROOT }} && chmod +x ./redeploy-site.sh && ./redeploy-site.sh"
       - name: Print Out Container Status
