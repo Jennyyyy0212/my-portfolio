@@ -59,7 +59,9 @@ jobs:
           TIMESTAMP=$(TZ="America/Los_Angeles" date +'%Y-%m-%dT%H:%M:%S')
           echo "Timestamp: $TIMESTAMP"
           ERROR_MESSAGE="Deployment failed at ${TIMESTAMP}"
-          ERROR_DETAILS=$(cat $GITHUB_STEP_SUMMARY)
+          
+          ERROR_DETAILS="${{ steps.deploy.outputs.error_message }}"
+          echo "Deploy step logs: $ERROR_DETAILS"
           FULL_ERROR="${ERROR_MESSAGE}\nError details:\n${ERROR_DETAILS}"
 
           curl -s -X POST "${{ secrets.DISCORD_WEBHOOK }}" \
