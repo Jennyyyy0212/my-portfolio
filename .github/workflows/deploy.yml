@@ -35,19 +35,18 @@ jobs:
       - name: Discord Notification for Successful Deployment
         if: ${{ success() }}
         run: |
-          export TZ="America/Los_Angeles"
-          TIMESTAMP=$(date +'%Y-%m-%dT%H:%M:%S')
+          TIMESTAMP=$(TZ="America/Los_Angeles" date +'%Y-%m-%dT%H:%M:%S')
           echo "Timestamp: $TIMESTAMP"
 
           curl -s -X POST "${{ secrets.DISCORD_WEBHOOK }}" \
-          -d '{
-            "content": "🚀 Deployment Successful",
-            "embeds": [{
-              "title": "Deployment Status",
-              "description": "The deployment was successful.",
-              "timestamp": "'$TIMESTAMP'"
+          -d "{
+            \"content\": \"🚀 Deployment Successful\",
+            \"embeds\": [{
+              \"title\": \"Deployment Status\",
+              \"description\": \"The deployment was successful.\",
+              \"timestamp\": \"$TIMESTAMP\"
             }]
-          }'
+          }"
       - name: Discord Notification for Failure Deployment
         if: ${{ failure() }}
         run: |
