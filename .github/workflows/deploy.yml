@@ -1,12 +1,14 @@
 name: Deploy
 on:
-  push:
-    branches:
-      - main
+  workflow_run:
+    workflows: ["Run Tests"]  # Name of the test workflow
+    types:
+      - completed
   workflow_dispatch:
     
 jobs:
   deploy:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }} 
     runs-on: ubuntu-latest
     name: "Deploy to VPS"
     steps:
@@ -28,3 +30,37 @@ jobs:
           SSH_USER: ${{ secrets.SSH_USER }}
       - name: Deploy site
         run: ssh my-vps "cd ${{ secrets.PROJECT_ROOT }} && chmod +x ./redeploy-site.sh && ./redeploy-site.sh"
+      - name: Print Out Container Status
+        run: ssh my-vps "cd ${{ secrets.PROJECT_ROOT }} && docker compose ps"
+      - name: Discord Notification for Successful Deployment
+        if: ${{ success() }}
+        run: |
+          TIMESTAMP=$(TZ="America/Los_Angeles" date +'%Y-%m-%dT%H:%M:%S')
+          curl -s -X POST "${{ secrets.DISCORD_WEBHOOK }}" \
+          -d '{
+            "content": "🚀 Deployment Successful",
+            "embeds": [{
+              "title": "Deployment Status",
+              "description": "The deployment was successful.",
+              "timestamp": "'$TIMESTAMP'"
+            }]
+          }'
+      - name: Discord Notification for Failure Deployment
+        if: ${{ failure() }}
+        run: |
+          # Capture the error message and logs directly without storing to a file
+          TIMESTAMP=$(TZ="America/Los_Angeles" date +'%Y-%m-%dT%H:%M:%S')
+          ERROR_MESSAGE="Deployment failed at ${TIMESTAMP}"
+          ERROR_DETAILS=$(cat $GITHUB_STEP_SUMMARY)
+          FULL_ERROR="${ERROR_MESSAGE}\nError details:\n${ERROR_DETAILS}"
+
+          curl -s -X POST "${{ secrets.DISCORD_WEBHOOK }}" \
+          -d '{
+            "content": "🚨 Deployment Failed",
+            "embeds": [{
+              "title": "Deployment Status",
+              "description": "'"${FULL_ERROR}"'",
+              "timestamp": "'$TIMESTAMP'"
+            }]
+          }'
+
