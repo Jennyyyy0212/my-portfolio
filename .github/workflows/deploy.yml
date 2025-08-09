@@ -44,7 +44,7 @@ jobs:
             "content": "🚀 Deployment Successful",
             "embeds": [{
               "title": "Deployment Status",
-              "description": "The deployment was successful.",
+              "description": "The deployment was successful."
             }]
           }'
       - name: Discord Notification for Failure Deployment
@@ -63,7 +63,7 @@ jobs:
             "content": "🚨 Deployment Failed",
             "embeds": [{
               "title": "Deployment Status",
-              "description": "'"${FULL_ERROR}"'",
+              "description": "'"${FULL_ERROR}"'"
             }]
           }'
 
