@@ -95,6 +95,7 @@ jobs:
             fi
           
           echo "overall=$overall" >> "$GITHUB_OUTPUT"
+          echo "overall=$summary" >> "$GITHUB_OUTPUT"
           printf "%s\n" "$summary" >> "$GITHUB_STEP_SUMMARY"
   notify:
     name: Discord Notification
