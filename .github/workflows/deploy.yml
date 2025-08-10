@@ -8,7 +8,7 @@ on:
     
 jobs:
   deploy:
-    if: ${{ github.event.workflow_run.conclusion == 'success' }} 
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     name: "Deploy to VPS"
     outputs:
@@ -95,7 +95,7 @@ jobs:
             fi
           
           echo "overall=$overall" >> "$GITHUB_OUTPUT"
-          echo "overall=$summary" >> "$GITHUB_OUTPUT"
+          echo "summary=$summary" >> "$GITHUB_OUTPUT"
           printf "%s\n" "$summary" >> "$GITHUB_STEP_SUMMARY"
   notify:
     name: Discord Notification
