@@ -16,6 +16,8 @@ jobs:
       deploy_fail_result:  ${{ steps['deploy-failure'].outputs.result || steps['deploy-failure'].outcome }}
       deploy_site_result:  ${{ steps['deploy-site'].outputs.result || steps['deploy-site'].outcome }}
       container_result:    ${{ steps['container_status'].outputs.result || steps['container_status'].outcome }}
+      overall:             ${{ steps.compose.outputs.overall }}
+      summary:             ${{ steps.compose.outputs.summary }}
     steps:
       - name: Configure SSH
         id: configure-ssh
@@ -46,10 +48,15 @@ jobs:
           ssh my-vps "cd ${{ secrets.PROJECT_ROOT }} && chmod +x ./redeploy-site.sh && ./redeploy-site.sh"
       - name: Print Out Container Status
         id: container_status
+        if: ${{ success() }} 
         run: |
           ssh my-vps "cd ${{ secrets.PROJECT_ROOT }} && docker compose ps"
           NAMES=$(ssh my-vps "docker ps --format '{{.Names}}'")
-          echo "names=$NAMES" >> "$GITHUB_OUTPUT"
+          {
+            echo "names<<EOF"
+            echo "$NAMES"
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
       - name: Compose summary
         id: compose
         if: ${{ always() }}
@@ -85,6 +92,7 @@ jobs:
           ${names:-none}
           \`\`\`
           "
+          fi
           
           echo "overall=$overall" >> "$GITHUB_OUTPUT"
           printf "%s" "$summary" > msg.txt
@@ -96,7 +104,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Send Success to Discord
-        if: ${{ needs.deploy.outputs.overall == 'success' || steps.compose.outputs.overall == 'success' }}
+        if: ${{ needs.deploy.outputs.overall == 'success' }}
         run: |
           curl -s -X POST "$DISCORD_WEBHOOK" \
             -H "Content-Type: application/json" \
@@ -112,7 +120,7 @@ jobs:
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
       - name: Send failure to Discord
-        if: ${{ needs.deploy.result != 'success' || steps.compose.outputs.overall != 'success' }}
+        if: ${{ needs.deploy.outputs.overall != 'success' }}
         run: |
           curl -s -X POST "$DISCORD_WEBHOOK" \
             -H "Content-Type: application/json" \
