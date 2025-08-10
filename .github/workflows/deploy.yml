@@ -11,6 +11,11 @@ jobs:
     if: ${{ github.event.workflow_run.conclusion == 'success' }} 
     runs-on: ubuntu-latest
     name: "Deploy to VPS"
+    outputs:
+      ssh_result:          ${{ steps['configure-ssh'].outputs.result || steps['configure-ssh'].outcome }}
+      deploy_fail_result:  ${{ steps['deploy-failure'].outputs.result || steps['deploy-failure'].outcome }}
+      deploy_site_result:  ${{ steps['deploy-site'].outputs.result || steps['deploy-site'].outcome }}
+      container_result:    ${{ steps['container_status'].outputs.result || steps['container_status'].outcome }}
     steps:
       - name: Configure SSH
         id: configure-ssh
@@ -25,7 +30,6 @@ jobs:
             IdentityFile ~/.ssh/deploy-key.pem
             StrictHostKeyChecking no
           END
-          echo "result=success" >> "$GITHUB_OUTPUT"
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
           SSH_IP: ${{ secrets.SSH_IP }}
@@ -40,52 +44,59 @@ jobs:
         id: deploy-site
         run: |
           ssh my-vps "cd ${{ secrets.PROJECT_ROOT }} && chmod +x ./redeploy-site.sh && ./redeploy-site.sh"
-          echo "result=success" >> "$GITHUB_OUTPUT"
       - name: Print Out Container Status
         id: container_status
         run: |
           ssh my-vps "cd ${{ secrets.PROJECT_ROOT }} && docker compose ps"
           NAMES=$(ssh my-vps "docker ps --format '{{.Names}}'")
           echo "names=$NAMES" >> "$GITHUB_OUTPUT"
-          echo "result=success" >> "$GITHUB_OUTPUT"
-  notify:
-    name: Discord Notification
-    needs: [deploy]
-    if: always()
-    runs-on: ubuntu-latest
-    steps:
-      - name: Compose message
+      - name: Compose summary
         id: compose
+        if: ${{ always() }}
         shell: bash
         run: |
-          # Overall status
+          ch="${{ steps['configure-ssh'].outcome }}"
+          df="${{ steps['deploy-failure'].outcome }}"
+          ds="${{ steps['deploy-site'].outcome }}"
+          cs="${{ steps.container_status.outcome }}"
+
           overall="success"
-          ch="${{ needs.deploy.configure-ssh.output.result }}"
-          df="${{ needs.deploy.deploy-failure.output.result }}"
-          ds="${{ needs.deploy.deploy-site.output.result }}"
-          cs="${{ needs.deploy.container_status.output.result }}"
+          for s in "$ch" "$df" "$ds" "$cs"; do
+            [ "$s" = "success" ] || overall="failure"
+          done
 
-          if [[ "$ch" != "success" || "$df" != "success" || "$ds" != "success" || "$cs" != "success" ]]; then
-            overall="failure"
-          fi
-
-          # Build a compact summary block
           summary=$(cat <<EOF
           **Deploy Result:** ${overall^^}
 
-          **Jobs:**
-          - Configure SSH: \`${ch}\`
-          - Deploy Fails (should fail here): \`${df}\`
-          - Deploy Site on VPS: \`${ds}\`
-          - Container Status:\` ${cs}\`
+          **Steps:**
+          - Configure SSH: \`$ch\`
+          - Simulate Deploy Failure: \`$df\`
+          - Deploy Site: \`$ds\`
+          - Container Status: \`$cs\`
           EOF
           )
-          # Expose for next step
+
+          if [ "$overall" = "success" ]; then
+            names="${{ steps.container_status.outputs.names }}"
+          summary="$summary
+
+          **Running containers:**
+          \`\`\`
+          ${names:-none}
+          \`\`\`
+          "
+          
           echo "overall=$overall" >> "$GITHUB_OUTPUT"
           printf "%s" "$summary" > msg.txt
-
+          printf "%s\n" "$summary" >> "$GITHUB_STEP_SUMMARY"
+  notify:
+    name: Discord Notification
+    needs: deploy
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
       - name: Send Success to Discord
-        if: ${{ steps.compose.outputs.overall == 'success' }}
+        if: ${{ needs.deploy.outputs.overall == 'success' || steps.compose.outputs.overall == 'success' }}
         run: |
           curl -s -X POST "$DISCORD_WEBHOOK" \
             -H "Content-Type: application/json" \
@@ -101,7 +112,7 @@ jobs:
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
       - name: Send failure to Discord
-        if: ${{ steps.compose.outputs.overall != 'success' }}
+        if: ${{ needs.deploy.result != 'success' || steps.compose.outputs.overall != 'success' }}
         run: |
           curl -s -X POST "$DISCORD_WEBHOOK" \
             -H "Content-Type: application/json" \
