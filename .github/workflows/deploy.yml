@@ -72,31 +72,24 @@ jobs:
             [ "$s" = "success" ] || overall="failure"
           done
 
-          summary=$(cat <<EOF
-          **Deploy Result:** ${overall^^}
+          TMP=$(mktemp)
+          {
+            printf "**Deploy Result:** %s\n\n" "${overall^^}"
+            echo "**Steps:**"
+            printf -- "- Configure SSH: %s\n" "$ch"
+            printf -- "- Simulate Deploy Failure: %s\n" "$df"
+            printf -- "- Deploy Site: %s\n" "$ds"
+            printf -- "- Container Status: %s\n" "$cs"
 
-          **Steps:**
-          - Configure SSH: \`$ch\`
-          - Simulate Deploy Failure: \`$df\`
-          - Deploy Site: \`$ds\`
-          - Container Status: \`$cs\`
-          EOF
-          )
-
-          if [ "$overall" = "success" ]; then
-            names="${{ steps.container_status.outputs.names }}"
-            summary="$summary
-
-            **Running containers:**
-            \`\`\`
-            ${names:-none}
-            \`\`\`
-            "
+            if [ "$overall" = "success" ]; then
+              names="${{ steps.container_status.outputs.names }}"
+              printf "\n**Running containers:**\n%s\n" "${names:-none}"
             fi
+          } > "$TMP"
           
           echo "overall=$overall" >> "$GITHUB_OUTPUT"
-          { echo "summary<<EOF"; printf "%s\n" "$summary"; echo "EOF"; } >> "$GITHUB_OUTPUT"
-          printf "%s\n" "$summary" >> "$GITHUB_STEP_SUMMARY"
+          { echo "summary<<EOF"; cat "$TMP"; echo "EOF"; } >> "$GITHUB_OUTPUT"
+          cat "$TMP" >> "$GITHUB_STEP_SUMMARY"
   notify:
     name: Discord Notification
     needs: deploy
