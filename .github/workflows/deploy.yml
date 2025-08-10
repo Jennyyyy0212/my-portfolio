@@ -99,7 +99,7 @@ jobs:
       - name: Send Success to Discord
         if: ${{ needs.deploy.outputs.overall == 'success' }}
         run: |
-          DESC=$(jq -Rs . <<< "${{ needs.deploy.outputs.summary }}")
+          DESC=$(jq -Rs . <<< "$SUMMARY")
           curl -s -X POST "$DISCORD_WEBHOOK" \
             -H "Content-Type: application/json" \
             -d @- <<JSON
@@ -113,10 +113,11 @@ jobs:
           JSON
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+          SUMMARY: ${{ needs.deploy.outputs.summary }}
       - name: Send failure to Discord
         if: ${{ needs.deploy.outputs.overall != 'success' }}
         run: |
-          DESC=$(jq -Rs . <<< "${{ needs.deploy.outputs.summary }}")
+          DESC=$(jq -Rs . <<< "$SUMMARY")
           curl -s -X POST "$DISCORD_WEBHOOK" \
             -H "Content-Type: application/json" \
             -d @- <<JSON
@@ -131,3 +132,4 @@ jobs:
           JSON
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+          SUMMARY: ${{ needs.deploy.outputs.summary }}
