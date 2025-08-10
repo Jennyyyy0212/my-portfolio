@@ -76,10 +76,10 @@ jobs:
           {
             printf "**Deploy Result:** %s\n\n" "${overall^^}"
             echo "**Steps:**"
-            printf -- "- Configure SSH: `%s`\n" "$ch"
-            printf -- "- Simulate Deploy Failure: `%s`\n" "$df"
-            printf -- "- Deploy Site: `%s`\n" "$ds"
-            printf -- "- Container Status: `%s`\n" "$cs"
+            printf -- '- Configure SSH: `%s`\n' "$ch"
+            printf -- '- Simulate Deploy Failure: `%s`\n' "$df"
+            printf -- '- Deploy Site: `%s`\n' "$ds"
+            printf -- '- Container Status: `%s`\n' "$cs"
 
             if [ "$overall" = "success" ]; then
               names="${{ steps.container_status.outputs.names }}"
