@@ -85,17 +85,16 @@ jobs:
 
           if [ "$overall" = "success" ]; then
             names="${{ steps.container_status.outputs.names }}"
-          summary="$summary
+            summary="$summary
 
-          **Running containers:**
-          \`\`\`
-          ${names:-none}
-          \`\`\`
-          "
-          fi
+            **Running containers:**
+            \`\`\`
+            ${names:-none}
+            \`\`\`
+            "
+            fi
           
           echo "overall=$overall" >> "$GITHUB_OUTPUT"
-          printf "%s" "$summary" > msg.txt
           printf "%s\n" "$summary" >> "$GITHUB_STEP_SUMMARY"
   notify:
     name: Discord Notification
@@ -106,6 +105,7 @@ jobs:
       - name: Send Success to Discord
         if: ${{ needs.deploy.outputs.overall == 'success' }}
         run: |
+          DESC=$(jq -Rs . <<< "${{ needs.deploy.outputs.summary }}")
           curl -s -X POST "$DISCORD_WEBHOOK" \
             -H "Content-Type: application/json" \
             -d @- <<JSON
@@ -113,7 +113,7 @@ jobs:
             "content":"✅ **MLH Portfolio Deploy Succeeded** for \`${{ github.repository }}\` @ \`${{ github.ref_name }}\`",
             "embeds": [{
               "title": "Deployment Summary",
-              "description": $(jq -Rs . < msg.txt)
+              "description": $DESC
             }]
           }
           JSON
@@ -122,6 +122,7 @@ jobs:
       - name: Send failure to Discord
         if: ${{ needs.deploy.outputs.overall != 'success' }}
         run: |
+          DESC=$(jq -Rs . <<< "${{ needs.deploy.outputs.summary }}")
           curl -s -X POST "$DISCORD_WEBHOOK" \
             -H "Content-Type: application/json" \
             -d @- <<JSON
@@ -129,7 +130,7 @@ jobs:
             "content":"🚨 **MLH Portfolio Deploy Failed** for \`${{ github.repository }}\` @ \`${{ github.ref_name }}\`",
             "embeds": [{
               "title": "Deployment Summary",
-              "description": $(jq -Rs . < msg.txt),
+              "description": $DESC,
               "color": 16711680
             }]
           }
