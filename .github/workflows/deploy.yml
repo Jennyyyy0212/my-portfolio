@@ -13,6 +13,7 @@ jobs:
     name: "Deploy to VPS"
     steps:
       - name: Configure SSH
+        id: configure-ssh
         run: |
           mkdir -p ~/.ssh/
           echo "$SSH_PRIVATE_KEY" > ~/.ssh/deploy-key.pem
@@ -24,53 +25,95 @@ jobs:
             IdentityFile ~/.ssh/deploy-key.pem
             StrictHostKeyChecking no
           END
+          echo "result=success" >> "$GITHUB_OUTPUT"
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
           SSH_IP: ${{ secrets.SSH_IP }}
           SSH_USER: ${{ secrets.SSH_USER }}
       - name: Simulate Deployment Failure
+        id: deploy-failure
         run: |
           echo "Deploying to the server..."
           # Simulate a failure (e.g., non-zero exit code)
           exit 1  # Force failure
       - name: Deploy site
-        run: ssh my-vps "cd ${{ secrets.PROJECT_ROOT }} && chmod +x ./redeploy-site.sh && ./redeploy-site.sh"
+        id: deploy-site
+        run: |
+          ssh my-vps "cd ${{ secrets.PROJECT_ROOT }} && chmod +x ./redeploy-site.sh && ./redeploy-site.sh"
+          echo "result=success" >> "$GITHUB_OUTPUT"
       - name: Print Out Container Status
-        run: ssh my-vps "cd ${{ secrets.PROJECT_ROOT }} && docker compose ps"
-      - name: Discord Notification for Successful Deployment
-        if: ${{ success() }}
+        id: container_status
         run: |
-          TIMESTAMP=$(TZ="America/Los_Angeles" date +'%Y-%m-%dT%H:%M:%S')
-          echo "Timestamp: $TIMESTAMP"
-
-          curl -s -X POST "${{ secrets.DISCORD_WEBHOOK }}" \
-          -H "Content-Type: application/json" \
-          -d '{
-            "content": "🚀 Deployment Successful",
-            "embeds": [{
-              "title": "Deployment Status",
-              "description": "The deployment was successful."
-            }]
-          }'
-      - name: Discord Notification for Failure Deployment
-        if: ${{ failure() }}
+          ssh my-vps "cd ${{ secrets.PROJECT_ROOT }} && docker compose ps"
+          NAMES=$(ssh my-vps "docker ps --format '{{.Names}}'")
+          echo "names=$NAMES" >> "$GITHUB_OUTPUT"
+          echo "result=success" >> "$GITHUB_OUTPUT"
+  notify:
+    name: Discord Notification
+    needs: [deploy]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Compose message
+        id: compose
+        shell: bash
         run: |
-          # Capture the error message and logs directly without storing to a file
-          TIMESTAMP=$(TZ="America/Los_Angeles" date +'%Y-%m-%dT%H:%M:%S')
-          echo "Timestamp: $TIMESTAMP"
-          ERROR_MESSAGE="Deployment failed at ${TIMESTAMP}"
-          
-          ERROR_DETAILS="Workflow step failed: ${{ github.event.workflow_run.name }} - ${{ github.event.workflow_run.conclusion }}"
-          echo "Deploy step logs: $ERROR_DETAILS"
-          FULL_ERROR="${ERROR_MESSAGE}\nError details:\n${ERROR_DETAILS}"
+          # Overall status
+          overall="success"
+          ch="${{ needs.deploy.configure-ssh.output.result }}"
+          df="${{ needs.deploy.deploy-failure.output.result }}"
+          ds="${{ needs.deploy.deploy-site.output.result }}"
+          cs="${{ needs.deploy.container_status.output.result }}"
 
-          curl -s -X POST "${{ secrets.DISCORD_WEBHOOK }}" \
-          -H "Content-Type: application/json" \
-          -d '{
-            "content": "🚨 Deployment Failed",
+          if [[ "$ch" != "success" || "$df" != "success" || "$ds" != "success" || "$cs" != "success" ]]; then
+            overall="failure"
+          fi
+
+          # Build a compact summary block
+          summary=$(cat <<EOF
+          **Deploy Result:** ${overall^^}
+
+          **Jobs:**
+          - Configure SSH: \`${ch}\`
+          - Deploy Fails (should fail here): \`${df}\`
+          - Deploy Site on VPS: \`${ds}\`
+          - Container Status:\` ${cs}\`
+          EOF
+          )
+          # Expose for next step
+          echo "overall=$overall" >> "$GITHUB_OUTPUT"
+          printf "%s" "$summary" > msg.txt
+
+      - name: Send Success to Discord
+        if: ${{ steps.compose.outputs.overall == 'success' }}
+        run: |
+          curl -s -X POST "$DISCORD_WEBHOOK" \
+            -H "Content-Type: application/json" \
+            -d @- <<JSON
+          {
+            "content":"✅ **MLH Portfolio Deploy Succeeded** for \`${{ github.repository }}\` @ \`${{ github.ref_name }}\`",
             "embeds": [{
-              "title": "Deployment Status",
-              "description": "$FULL_ERROR"
+              "title": "Deployment Summary",
+              "description": $(jq -Rs . < msg.txt)
             }]
-          }'
-
+          }
+          JSON
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+      - name: Send failure to Discord
+        if: ${{ steps.compose.outputs.overall != 'success' }}
+        run: |
+          curl -s -X POST "$DISCORD_WEBHOOK" \
+            -H "Content-Type: application/json" \
+            -d @- <<JSON
+          {
+            "content":"🚨 **MLH Portfolio Deploy Failed** for \`${{ github.repository }}\` @ \`${{ github.ref_name }}\`",
+            "embeds": [{
+              "title": "Deployment Summary",
+              "description": $(jq -Rs . < msg.txt),
+              "color": 16711680
+            }]
+          }
+          JSON
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
